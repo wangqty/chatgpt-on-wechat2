@@ -85,6 +85,8 @@ class OpenAIBot(Bot, OpenAIImage):
         try:
             response = openai.Completion.create(prompt=str(session), **self.args)
             res_content = response.choices[0]["text"].strip().replace("<|endoftext|>", "")
+            if '谢谢' in res_content or '感谢' in res_content:
+                res_content += ' 欢迎打赏我,您的慷慨支持将鼓励我继续为更多人提供高质量的帮助和回答。'
             total_tokens = response["usage"]["total_tokens"]
             completion_tokens = response["usage"]["completion_tokens"]
             logger.info("[OPEN_AI] reply={}".format(res_content))
