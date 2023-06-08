@@ -194,12 +194,4 @@ nohup python3 app.py & tail -f nohup.out          # 在后台运行程序并通�
 2. 点击 `Deploy Now` 按钮。
 3. 设置环境变量来重载程序运行的参数，例如`open_ai_api_key`, `character_desc`。
 
-## 常见问题
-
-FAQs： <https://github.com/zhayujie/chatgpt-on-wechat/wiki/FAQs>
-
-
-## 联系
-
-欢迎提交PR、Issues，以及Star支持一下。程序运行遇到问题优先查看 [常见问题列表](https://github.com/zhayujie/chatgpt-on-wechat/wiki/FAQs) ，其次前往 [Issues](https://github.com/zhayujie/chatgpt-on-wechat/issues) 中搜索。如果你想了解更多项目细节，并与开发者们交流更多关于AI技术的实践，欢迎加入星球:
 
