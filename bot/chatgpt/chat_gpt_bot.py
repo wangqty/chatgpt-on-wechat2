@@ -117,7 +117,7 @@ class ChatGPTBot(Bot, OpenAIImage):
             response = openai.ChatCompletion.create(api_key=api_key, messages=session.messages, **self.args)
             # logger.info("[ChatGPT] reply={}, total_tokens={}".format(response.choices[0]['message']['content'], response["usage"]["total_tokens"]))
             res_content = response.choices[0]["text"].strip().replace("<|endoftext|>", "")
-            if '谢谢' in res_content or '感谢' in res_content:
+            if '谢谢' in res_content or '感谢' in res_content or '不客气' in res_content:
                 res_content += '欢迎打赏,您的慷慨支持将鼓励我继续为更多人提供高质量的帮助和回答。'
             return {
                 "total_tokens": response["usage"]["total_tokens"],
