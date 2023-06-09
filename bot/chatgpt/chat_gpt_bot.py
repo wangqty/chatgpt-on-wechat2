@@ -115,7 +115,7 @@ class ChatGPTBot(Bot, OpenAIImage):
                 raise openai.error.RateLimitError("RateLimitError: rate limit exceeded")
             # if api_key == None, the default openai.api_key will be used
             response = openai.ChatCompletion.create(api_key=api_key, messages=session.messages, **self.args)
-            # logger.info("[ChatGPT] reply={}, total_tokens={}".format(response.choices[0]['message']['content'], response["usage"]["total_tokens"]))
+            logger.debug("[ChatGPT] reply={}, total_tokens={}".format(response.choices[0]['message']['content'], response["usage"]["total_tokens"]))
             res_content = response.choices[0]["text"].strip().replace("<|endoftext|>", "")
             if '不用谢' in res_content or '不用客气' in res_content or '不客气' in res_content:
                 res_content += '欢迎打赏,您的慷慨支持将鼓励我继续为更多人提供高质量的帮助和回答。'
