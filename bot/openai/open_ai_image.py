@@ -2,6 +2,7 @@ import time
 
 import openai
 import openai.error
+import requests
 
 from common.log import logger
 from common.token_bucket import TokenBucket
@@ -20,15 +21,54 @@ class OpenAIImage(object):
             if conf().get("rate_limit_dalle") and not self.tb4dalle.get_token():
                 return False, "请求太快了，请休息一下再问我吧"
             logger.info("[OPEN_AI] image_query={}".format(query))
-            response = openai.Image.create(
-                api_key=api_key,
-                prompt=query,  # 图片描述
-                n=1,  # 每次生成图片的数量
-                size=conf().get("image_create_size", "256x256"),  # 图片大小,可选有 256x256, 512x512, 1024x1024
-            )
-            image_url = response["data"][0]["url"]
+           
+            base_url = conf().get("api_base_url")
+            data = {
+                'email': conf().get("api_email"), 
+                'password': conf().get("api_password"),
+            }
+            r0 = requests.post(base_url + "/get_token", json=data).json()
+            token_str = r0['info']
+            model_name = 'Artist v0.3.0 Beta'
+            neg_prompt = ""
+            n_images=1
+            scale=7
+            output_size="960x960"
+            select_seed=-1
+            init_img=""
+            controlnet_model=""
+
+            data = {
+                "token": token_str,
+                "model_name": model_name,
+                "prompt": query,
+                "neg_prompt": neg_prompt,
+                "n_images": n_images,
+                "scale": scale,
+                "select_seed": select_seed,
+                "output_size": output_size,
+                "init_img": init_img,
+                "controlnet_model": controlnet_model,
+            }
+            r1 = requests.post(base_url + "/task_submit", json=data).json()
+            task_id = r1['info']['task_id']
+            logger.info(task_id)
+
+            data2 = {
+                'token': token_str,
+                'task_id': task_id,
+            }
+            while(True):
+                response2 = requests.post(base_url + "/task_result", json=data2).json()
+                if response2['info']['state'] == 'done':
+                    image_url = response2['info']['images'][0]['large']
+                    logger.info(image_url)
+                    break
+                time.sleep(1)
+
             logger.info("[OPEN_AI] image_url={}".format(image_url))
             return True, image_url
+
         except openai.error.RateLimitError as e:
             logger.warn(e)
             if retry_count < 1:
@@ -40,3 +80,5 @@ class OpenAIImage(object):
         except Exception as e:
             logger.exception(e)
             return False, str(e)
+    
+    
