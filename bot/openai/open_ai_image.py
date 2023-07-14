@@ -20,7 +20,7 @@ class OpenAIImage(object):
         try:
             if conf().get("rate_limit_dalle") and not self.tb4dalle.get_token():
                 return False, "请求太快了，请休息一下再问我吧"
-            logger.info("[OPEN_AI] image_query={}".format(query))
+            logger.info("[mianhua] image_query={}".format(query))
            
             base_url = conf().get("api_base_url")
             data = {
@@ -50,9 +50,10 @@ class OpenAIImage(object):
                 "init_img": init_img,
                 "controlnet_model": controlnet_model,
             }
+            
             r1 = requests.post(base_url + "/task_submit", json=data).json()
             task_id = r1['info']['task_id']
-            logger.info(task_id)
+            logger.info("mianhua task_id=" +task_id)
 
             data2 = {
                 'token': token_str,
